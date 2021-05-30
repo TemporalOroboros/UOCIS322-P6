@@ -53,7 +53,7 @@ def display():
         return query_result.text, query_result.status_code
 
 
-    controle_data = json.loads(json.loads(query_result.text))
+    controle_data = json.loads(query_result.text)
     if isinstance(controle_data, str):
         app.logger.debug('\tFailed to decode controle data json string: {}'.format(controle_data))
         return "", 500

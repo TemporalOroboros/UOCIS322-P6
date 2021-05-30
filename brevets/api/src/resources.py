@@ -1,6 +1,6 @@
 import json
 import flask
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_restful import Resource
 from bson.objectid import ObjectId
 
@@ -34,7 +34,7 @@ class DB_Fetch(Resource):
         if not self.sort_key is None:
             cursor = cursor.sort(self.sort_key, 1)
 
-        return formatter(cursor), 200
+        return Response(formatter(cursor), 200)
 
 
 # Database access resource
@@ -59,7 +59,7 @@ class DB_Access(Resource):
             result = list(result)
         else:
             result = target_db.find_one({'_id': ObjectId(uid)}, self.projection)
-        return json.dumps(result), 200
+        return Response(json.dumps(result), 200)
 
     def post(self, uid: str = None):
         self.app.logger.debug('DB_Access handler recieved POST request')
