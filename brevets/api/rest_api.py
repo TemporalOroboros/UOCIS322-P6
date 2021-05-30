@@ -39,7 +39,7 @@ class DB_Access_Generic(DB_Access):
 @api.resource('/listAll/<string:ret_format>', '/listAll', resource_class_kwargs = {
     'app': app,
     'target_db': controles,
-    'projection': {'_id': False},
+    'projection': {'_id': False, 'open': True, 'close': True},
     'formatters': FORMATTERS,
     'default_format': 'json',
     'sort_key': 'km'
@@ -50,7 +50,7 @@ class DB_Fetch_All(DB_Fetch):
 @api.resource('/listOpenOnly/<string:ret_format>', '/listOpenOnly', resource_class_kwargs = {
     'app': app,
     'target_db': controles,
-    'projection': {'_id': False, 'close': False},
+    'projection': {'_id': False, 'open': True},
     'formatters': FORMATTERS,
     'default_format': 'json',
     'sort_key': 'open'
@@ -61,7 +61,7 @@ class DB_Fetch_Open(DB_Fetch):
 @api.resource('/listCloseOnly/<string:ret_format>', '/listCloseOnly/', resource_class_kwargs = {
     'app': app,
     'target_db': controles,
-    'projection': {'_id': False, 'open': False},
+    'projection': {'_id': False, 'close': True},
     'formatters': FORMATTERS,
     'default_format': 'json',
     'sort_key': 'close'

@@ -44,14 +44,13 @@ def display():
     app.logger.debug("Display page entry")
 
     app.logger.debug('Fetching controle times from DB:')
-    query_url = API_URL_BASE + "/listAll/json"
+    query_url = API_URL_BASE + "/controles/all"
     app.logger.debug('\tSumitting query to RESTAPI at {}'.format(query_url))
 
     query_result = requests.get(query_url)
     if query_result.status_code > 299:
         app.logger.debug('\tEncountered error fetching from database. Status code {}'.format(query_result.status_code))
         return query_result.text, query_result.status_code
-
 
     controle_data = json.loads(query_result.text)
     if isinstance(controle_data, str):

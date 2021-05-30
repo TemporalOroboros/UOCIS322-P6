@@ -7,10 +7,18 @@ from bson.objectid import ObjectId
 # Database access resource
 # '/base/<ret_format:str>'
 class DB_Fetch(Resource):
-    def __init__(self, app: Flask, target_db, projection: dict = {}, formatters: dict = {}, default_format: str = None, sort_key: str = None):
+    def __init__(self, app: Flask, target_db, projection: dict = {'_id': False}, formatters: dict = {}, default_format: str = None, sort_key: str = None):
         super().__init__()
         
-        projection['_id'] = False
+        if isinstance(projection, dict):
+            projection['_id'] = False
+        elif isinstance(projection, list):
+            new_projection = {'_id': False}
+            for key in projection:
+                if key == '_id':
+                    continue
+                new_projection[key] = True
+            projection = new_projection
 
         self.app = app
         self.target_db = target_db
@@ -53,12 +61,12 @@ class DB_Access(Resource):
     def get(self, uid: str = None):
         self.app.logger.debug('DB_Access handler recieved GET request')
         if uid is None or uid == 'all':
-            result = target_db.find(projection=self.projection)
+            result = self.target_db.find(projection=self.projection)
             if not self.sort_key is None:
                 result = result.sort(self.sort_key, 1)
             result = list(result)
         else:
-            result = target_db.find_one({'_id': ObjectId(uid)}, self.projection)
+            result = self.target_db.find_one({'_id': ObjectId(uid)}, self.projection)
         return Response(json.dumps(result), 200)
 
     def post(self, uid: str = None):

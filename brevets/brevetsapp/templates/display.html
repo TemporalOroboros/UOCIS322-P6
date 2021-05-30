@@ -31,6 +31,7 @@
    <body>
       <div class="container">
          <h1>ACP Brevet Times</h1>
+         <p>Want to <a href="{{ url_for("index") }}">go back</a>?</p>
          {% with messages = get_flashed_messages() %}
          {% if messages %}
          <ul class="flashes">
