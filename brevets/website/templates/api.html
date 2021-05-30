@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html>
+   <head>
+      <title>REST API Interface</html>
+   </head>
+   <body>
+      <div class='container'>
+         <h1>REST API Inteface:</h1>
+         <p>An iterface to test the RESTful API</p>
+         <hr />
+         <form>
+            <!--  -->
+            <label>Return values:</label>
+            <input name='ret_open' id='ret_open' type='checkbox' value='open' /><label for='ret_open'>Return open times</label>
+            <input name='ret_close' id='ret_close' type='checkbox' value='close' /><label for='ret_close'>Return close times</label>
+
+            <!--  -->
+            <label for='ret_format'>Return format:</label>
+            <select name='ret_format' id='ret_format'>
+                <option value='' selected>NULL</option>
+                <option value='json'>JSON</option>
+                <option value='csv'>CSV</option>
+            </select>
+            
+            <!--  -->
+            <label for='query_size'>Max query size:</label>
+            <input name='query_size' id='query_size' type='number' min='0' max='1'></input>
+            <input name='omit_size' id='omit_size' type='checkbox' /><label for='omit_size'>Omit query size</label>
+            
+            <!--  -->
+            <button type='button' name='submit'>Submit Request</button>
+         </form>
+         <br>
+         <div id='result'>
+         </div>
+      </div>
+
+      <script>
+         var QUERY_TYPE_OPEN = 1;
+         var QUERY_TYPE_CLOSE = 2;
+
+         $(document).ready(function() {
+
+            $("form").sumbit(function(e) {
+               e.preventDefault();
+            });
+
+            /// Post to 
+            $("button[name='submit']").click(function() {
+               var query_type = 0;
+               if($("input[name='ret_open']").prop("checked")) {
+                  query_type |= QUERY_TYPE_OPEN;
+               }
+               if($("input[name='ret_close']").prop("checked")) {
+                  query_type |= QUERY_TYPE_CLOSE;
+               }
+
+               switch(query_type) {
+                  case QUERY_TYPE_OPEN:
+                     query_type = 'listOpenOnly';
+                     break;
+                  case QUERY_TYPE_CLOSE:
+                     query_type = 'listCloseOnly';
+                     break;
+                  case (QUERY_TYPE_OPEN | QUERY_TYPE_CLOSE):
+                     query_type = 'listAll';
+                     break;
+                  default:
+                     console.log('Invalid query type entered');
+                     return;
+               }
+
+               var target_url = `/test_api/${query_type}`;
+            
+               var ret_format = $("input[name='ret_format']").val();
+               if(ret_format != '') {
+                  target_url = `${target_url}/${ret_format}`;
+               }
+
+               var query_size = parseInt($("input[name='query_size']").val());
+               $.get(target_url, $("input[name='omit_size']").prop("checked") ? {'top': query_size} : null,
+                  function(data) {
+                     $("#result").val(data);
+               });
+            });
+
+         });
+
+      </script>
+   </body>
+</html>
+
