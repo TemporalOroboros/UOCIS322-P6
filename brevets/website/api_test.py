@@ -4,7 +4,7 @@ import logging
 import requests
 
 import config
-from flask import Flask
+from flask import Flask, render_template, request
 
 CONFIG = config.configuration()
 app = Flask(__name__)
@@ -27,17 +27,17 @@ def serve_index():
 ##
 
 @app.route("/test_api/<string:url_path>/<string:ret_format>")
-def test_api_with_format(url_path: str, ret_format: str):
+def test_api_with_format(url_path: str, ret_format: str = ''):
     api_url = '{}/{}/{}'.format(API_URL_BASE, url_path, ret_format)
     limit = request.args.get('top', None, type=int)
-    query_result = requests.get(api_url, {'top': limit} if len(limit) > 0 else None)
+    query_result = requests.get(api_url, None if (limit is None or limit == '') else {'top': limit})
     return query_result.text, query_result.status_code 
 
 @app.route("/test_api/<string:url_path>")
 def test_api(url_path: str):
     api_url = '{}/{}'.format(API_URL_BASE, url_path)
     limit = request.args.get('top', None, type=int)
-    query_result = requests.get(api_url, {'top': limit} if len(limit) > 0 else None)
+    query_result = requests.get(api_url, None if (limit is None or limit == '') else {'top': limit})
     return query_result.text, query_result.status_code 
 
 ##
@@ -55,6 +55,6 @@ if app.debug:
     app.logger.setLevel(logging.DEBUG)
 
 if __name__ == "__main__":
-    app.logger.debug('Starting RESTful API test server')
-    app.run(port=CONFIG.PORT, host='0.0.0.0')
+    app.logger.debug('Starting RESTful API test server at PORT {}'.format(CONFIG.PORT))
+    app.run(port=int(CONFIG.PORT), host='0.0.0.0')
 

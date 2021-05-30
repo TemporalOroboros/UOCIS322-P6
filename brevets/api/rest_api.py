@@ -76,6 +76,6 @@ if app.debug:
     app.logger.setLevel(logging.DEBUG)
 
 if __name__ == "__main__":
-    app.logger.debug('Starting RESTful API')
-    app.run(port=CONFIG.PORT, host='0.0.0.0')
+    app.logger.debug('Starting RESTful API at PORT {}'.format(CONFIG.PORT))
+    app.run(port=int(CONFIG.PORT), host='0.0.0.0')
 

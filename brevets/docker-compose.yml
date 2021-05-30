@@ -6,7 +6,7 @@ services:
         build: api/
         command: python -u rest_api.py
         ports:
-            - '5001:5000'
+            - '5000:5000'
         depends_on:
             - ourdb
         environment:
@@ -16,8 +16,7 @@ services:
         build: brevetsapp/
         command: python -u flask_brevets.py
         ports:
-            - '5000:5100'
-            - '10000:5000'
+            - '5001:5000'
         depends_on:
             - rest_api
         environment:
@@ -28,7 +27,7 @@ services:
         build: website/
         command: python -u api_test.py
         ports:
-            - '10001:5200' # Exposes the api_test interfact
+            - '5002:5000' # Exposes the api test interface
         depends_on:
             - rest_api
         environment:
